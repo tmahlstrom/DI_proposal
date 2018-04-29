@@ -11,6 +11,7 @@ def main():
         reader = csv.reader(f)
         data_list = list(reader)
 
+
     x = []
     y = []
 
