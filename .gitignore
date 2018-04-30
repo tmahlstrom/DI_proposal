@@ -1,16 +1,13 @@
 bnet/
 tyler/
-data/
 archive/
+Dropbox/
 *dict*
-*.png
 *cache*
-*.csv*
-*.txt
 *.out
 test*
-Dropbox/
 *.md
+*.ipynb_checkpoints
 
 # OS generated files #
 ######################
@@ -21,3 +18,4 @@ Dropbox/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
