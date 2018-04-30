@@ -39,12 +39,12 @@ def main():
 
 
     #plt.legend()
-    plt.scatter(x,y, s=scale, c=color, marker = ",", lw=0, alpha = 0.5, label = '$\mathregular{}$accounts with # games played: <15')
+    plt.scatter(x,y, s=scale, c=color, marker = ",", lw=0, alpha = 0.5, label = 'accounts with # games played: <15')
     #plt.scatter(x, y, c="g", alpha=0.5, marker=r'$\clubsuit$',label="Luck")
     m, b = np.polyfit(x, y, 1)
 
     slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
-    plt.plot(x, slope*x +intercept, '-', c = color, label = '$\mathregular{}$slope = ' + '%1.2E' % slope)
+    plt.plot(x, slope*x +intercept, '-', c = color, label = 'slope = ' + '%1.2E' % slope)
     #plt.legend(('data', 'line-regression r={}'.format(r_value)), 'best')
 
     #############################################################################
@@ -75,16 +75,13 @@ def main():
     scale = 1.0
 
 
-    #plt.legend()
-
-    plt.scatter(x,y, s=scale, c=color, marker = ",", lw=0, alpha = 1.0, label = '$\mathregular{}$accounts with # games played: 15-100')
+    plt.scatter(x,y, s=scale, c=color, marker = ",", lw=0, alpha = 1.0, label = 'accounts with # games played: 15-100')
     m, b = np.polyfit(x, y, 1)
 
     slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
-    plt.plot(x, slope*x +intercept, '-', c = color, label = '$\mathregular{}$slope = ' + '%1.2E' % slope)
-    #plt.legend(('data', 'line-regression r={}'.format(r_value)), 'best')
+    plt.plot(x, slope*x +intercept, '-', c = color, label = 'slope = ' + '%1.2E' % slope)
 
-    # #########################################################################
+    ##########################################################################
 
     x = []
     y = []
@@ -111,81 +108,18 @@ def main():
     color = 'b'
     scale = 1.0
 
-
-    #plt.legend()
-
-    plt.scatter(x,y, s=scale, c=color, marker = ",", lw=0, alpha = 0.5, label = '$\mathregular{}$accounts with # games played: >100')
+    plt.scatter(x,y, s=scale, c=color, marker = ",", lw=0, alpha = 0.5, label = 'accounts with # games played: >100')
     m, b = np.polyfit(x, y, 1)
 
     slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
-    plt.plot(x, slope*x +intercept, '-', c = color, label = '$\mathregular{}$slope = ' + '%1.2E' % slope)
-    #plt.legend(('data', 'line-regression r={}'.format(r_value)), 'best')
-
-    # ##########################################################################
+    plt.plot(x, slope*x +intercept, '-', c = color, label = 'slope = ' + '%1.2E' % slope)
 
 
-    # x = []
-    # y = []
-
-    # for z in range (0, len(data_list)):
-    #     if data_list[z][2] >= 100 and data_list[z][2] < 300:
-    #         x.append(data_list[z][0])
-    #         y.append(data_list[z][1])
-    #     else:
-    #         pass
-
-    # x = np.array(x)
-    # y = np.array(y)
-
-    # color = 'b'
-    # scale = 1.0
+    plt.xlabel('Elo (skill rating)', size = 18)
+    plt.ylabel('$Win%', size = 18)
+    plt.title('Elo vs Win%', size = 24)
 
 
-
-    # plt.scatter(x,y, s=scale, c=color, marker = ",", lw=0, alpha = 0.5, label = '$\mathregular{}$100-299 games' + ", n= " +str(len(x)))
-
-    # slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
-    # plt.plot(x, slope*x +intercept, '-', c = color, label = '$\mathregular{r^2}$' + '=%.4f' % r_value)
-
-    # ##########################################################################
-
-    # x = []
-    # y = []
-
-    # for z in range (0, len(data_list)):
-    #     if data_list[z][2] >= 300:
-    #         x.append(data_list[z][0])
-    #         y.append(data_list[z][1])
-    #     else:
-    #         pass
-
-    # x = np.array(x)
-    # y = np.array(y)
-
-    # color = 'k'
-    # scale = 1.0
-
-
-    # plt.scatter(x,y, s=scale, c=color, marker = ",", lw=0, label = '$\mathregular{}$300+ games' + ", n= " +str(len(x)))
-
-    # slope, intercept, r_value, p_value, std_err = stats.linregress(x,y)
-    # plt.plot(x, slope*x +intercept, '-', c = color, label = '$\mathregular{r^2}$' + '=%.4f' % r_value)
-
-
-
-
-
-
-
-
-
-    plt.xlabel('$\mathregular{}$Elo (skill rating)', size = 18)
-    plt.ylabel('$\mathregular{}$Win%', size = 18)
-    plt.title('$\mathregular{}$Elo vs Win%', size = 24)
-
-
-
-    # plt.legend()
     leg = plt.legend(loc = 2, ncol = 2, scatterpoints=5, prop = {'size':16}, markerscale = 2.5, fancybox = True)
     leg.get_frame().set_alpha(1.0)
 
