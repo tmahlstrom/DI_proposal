@@ -25,12 +25,15 @@ from matplotlib.patches import Patch
 from matplotlib.font_manager import FontProperties
 from matplotlib.colors import LinearSegmentedColormap
 
+#WARNING: this script grabs a pickled df from the 'feature_engineering_and_model_exploration.ipynb'. If that df is too big this may be really slow. 
+
 y_model_pred = []
 y_elo_standard_pred = []
 
 
 def main():
-    df = pd.read_pickle('feature_df')
+    df = pd.read_pickle('feature_df') #WARNING SEE ABOVE 
+    df = df[df.index != 2200]
     print(df)
     plot_features(df)
     # axes = df.plot.bar(rot=0, subplots=True)
@@ -57,9 +60,9 @@ def plot_features(df):
     
     # set height of bar
     bars1 = df['% best move'].values.tolist()
-    bars1 = [x - 0.2 for x in bars1]
+    bars1 = [(x - 0.31) * 0.8 for x in bars1]
     bars2 = df['avg mid game strength'].values.tolist()
-    bars2 = [x - 0.5 for x in bars2]
+    bars2 = [(x - 0.69) * 0.9 for x in bars2]
 
     bars3 = df['% blunders'].values.tolist()
     bars4 = df['std cp score'].values.tolist()
@@ -68,13 +71,13 @@ def plot_features(df):
     
     # Set position of bar on X axis
     r1 = np.arange(len(bars1))
-    r2 = [x + barWidth for x in r1]
+    r2 = [x + barWidth + 0.05 for x in r1]
     #r3 = [x + barWidth for x in r2]
     
     # Make the plot
     plt.subplot(2, 1, 1)
-    plt.bar(r1, bars1, color=[218.0/255,165/255.0,32.0/255], width=barWidth, linewidth = 1.5, edgecolor='black', label= '% chosen moves = best option')
-    plt.bar(r2, bars2, color=[0, 51./255., 102./255.], width=barWidth, linewidth = 1.5, edgecolor='black', label='average mid-game choice rank')
+    plt.bar(r1, bars1, color=[0, 51./255., 102./255., 0.8], width=barWidth, linewidth = 1.5, edgecolor='black', label= '% chosen moves = best option')
+    plt.bar(r2, bars2, color=[104.0/255,71./255.0,49.0/255, 0.8], width=barWidth, linewidth = 1.5, edgecolor='black', label='average mid-game choice rank')
     #plt.xlabel('', fontweight='bold')
     plt.xticks([r + barWidth for r in range(len(bars1))], df.index.tolist(), size = 20)
     plt.tick_params(
@@ -84,21 +87,21 @@ def plot_features(df):
         top=False,         # ticks along the top edge are off
         labelbottom=True)
     plt.yticks([])
-    plt.ylabel('values scaled for viewing', fontsize=20, **font)
-    plt.legend(loc = 2, prop={'size': 20, 'family':'Adobe Hebrew'}, labelspacing = 1.0)
+    plt.ylabel('values scaled for viewing', rotation = 'horizontal', horizontalalignment = 'left', fontsize=18, **font)
+    plt.legend(loc = (0.0,0.6), prop={'size': 18, 'family':'Adobe Hebrew'}, labelspacing = 1.0)
     plt.margins(x=0.05)
     #plt.title("Several features used to train my models", fontweight='bold', size = 32)
-    plt.title("Several features used to train my models", loc = 'center', y=0.99, bbox=dict(facecolor='white', edgecolor='black', boxstyle='square', linewidth = 1.0), fontsize=30, **font)
+    plt.title("Several features used to train my models", loc = 'center', y=0.99, bbox=dict(facecolor='white', edgecolor='black', boxstyle='square', linewidth = 1.0), fontsize=34, **font)
 
     #plt.bar(r3, bars3, color='#2d7f5e', width=barWidth, edgecolor='white', label='var3')
     plt.subplot(2, 1, 2)
-    plt.bar(r1, bars3, color=[102./255., 0, 25./255.], width=barWidth, linewidth = 1.5, edgecolor='black', label='% chosen moves = blunder')
-    plt.bar(r2, bars4, color=[85./255, 85./255, 85./255], width=barWidth, linewidth = 1.5, edgecolor='black', label='standard dev. of move strength')
-    plt.legend(prop={'size': 20, 'family':'Adobe Hebrew'}, labelspacing = 1.0)
+    plt.bar(r1, bars3, color=[102./255., 0, 25./255., 0.8], width=barWidth, linewidth = 1.5, edgecolor='black', label='% chosen moves = blunder')
+    plt.bar(r2, bars4, color=[85./255, 85./255, 85./255, 0.8], width=barWidth, linewidth = 1.5, edgecolor='black', label='standard dev. of move strength')
+    plt.legend(loc = (0.63,0.6), prop={'size': 18, 'family':'Adobe Hebrew'}, labelspacing = 1.0)
 
     #plt.xticks(ticks=None, labels=None)
     # Add xticks on the middle of the group bars
-    plt.xlabel('Elo bins', fontsize=22, **font)
+    plt.xlabel('Elo bins', fontsize=24, **font)
     plt.xticks([r + barWidth for r in range(len(bars1))], df.index.tolist(), size = 20)
     plt.tick_params(
         axis='x',          # changes apply to the x-axis
@@ -107,70 +110,14 @@ def plot_features(df):
         top=False,         # ticks along the top edge are off
         labelbottom=True)
     plt.yticks([])
-    plt.ylabel('values scaled for viewing', fontsize=20, **font)
+    plt.ylabel('values scaled for viewing', fontsize=18, **font)
     plt.margins(x=0.05)
 
-
-    # Create legend & Show graphic
 
     plt.show()
 
 
 
-    # style.use('seaborn-talk') 
-    # sns.set_style("white")
-    # sns.set_context("poster", font_scale=1.5,)
-    # font = {'fontname':'Adobe Hebrew'}
-    # bins = np.array([400 + 25 * x for x in range(150)])
-
-    # sns.distplot(y_elo_standard_pred, bins = bins, hist = True, kde=False, color = [102./255., 0, 25./255.],
-    #         hist_kws = {"histtype"  : 'stepfilled', "alpha": 0.8},
-    #         kde_kws = {'shade': True, 'linewidth': 1}, 
-    #         label = 'standard system predictions')
-    # sns.distplot(y_model_pred, bins = bins, hist = True, kde=False, color = [0, 51./255., 102./255.], 
-    #         hist_kws = {"histtype"  : 'stepfilled', "alpha": 0.8},
-    #         kde_kws = {'shade': True, 'linewidth': 1},  
-    #         label = 'my model predictions')
-    # sns.distplot(y_test, bins = bins, hist = True, kde=False, color = [218.0/255,165/255.0,32.0/255],
-    #         hist_kws = {"histtype"  : 'stepfilled', "alpha": 0.4},
-    #         kde_kws = {'shade': True, 'linewidth': 1}, label = 'target values')
-
-
-    # # p = df.ix[:, df.columns.difference(exclude)].T.plot(kind='bar', stacked=True, color = colors, edgecolor = 'black', figsize=(16,8), grid = None, legend=False, linewidth = 1.5)
-    # #plt.rcParams["font.size"] = 28
-    # plt.minorticks_off()
-    # #plt.setp(p, markerfacecolor='C0')
-    # x_ticks_int = [1000, 1200, 1400, 1600, 1800, 2000, 2200, 2400]
-    # x_ticks_str = [str(x) for x in x_ticks_int]
-    
-    # plt.xticks(x_ticks_int, x_ticks_str, rotation='horizontal', fontsize=14, fontname = 'Lucida Console')
-    # plt.yticks([])
-    # plt.title("Density of predicted vs target Elo values", loc = 'center', y=0.99, bbox=dict(facecolor='white', edgecolor='black', boxstyle='square', linewidth = 1.0), fontsize=30, **font)
-    # plt.xlabel("Elo", fontsize=22, **font)
-    # plt.ylabel("Density",labelpad= 20, fontsize=22, **font)
-    # plt.xlim(900, 2500)
-    # plt.ylim(0.0, 90)
-
-    # # ax = plt.subplot(111)
-    # # box = ax.get_position()
-    # # ax.set_position([box.x0, box.y0, box.width * 0.8, box.height])
-    
-    # map_colors = [(0, 51./255., 102./255.), (.7, .6, .7), (102./255., 0, 25./255.)] 
-    # cmap_name = 'my_custom_cmap'
-    # cmap = LinearSegmentedColormap.from_list(cmap_name, map_colors, N=9)
-
-    
-    # legend_elements = [Patch(facecolor=[102./255., 0, 25./255., 0.8], edgecolor='black',
-    #                     label='Standard Elo system', linewidth = 1.0),
-    #                     Patch(facecolor= [0, 51./255., 102./255., 0.8], edgecolor='black',
-    #                     label='My model predictions', linewidth = 1.0),
-    #                     Patch(facecolor= [218.0/255,165/255.0,32.0/255, 0.4], edgecolor='black',
-    #                     label='Actual values', linewidth = 1.0)]
-    # plt.legend(handles=legend_elements, loc='center right',  prop={'size': 18, 'family':'Adobe Hebrew'}, labelspacing = 1.0)
-    # #bbox_to_anchor=(1, 0.5),
-    
-    # # plt.legend(handles=legend_elements, loc='top')
-    # plt.show()
 
 
 

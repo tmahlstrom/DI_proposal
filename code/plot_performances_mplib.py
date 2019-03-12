@@ -26,7 +26,7 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.colors import LinearSegmentedColormap
 
 plot_type = 'relative' # 'relative' vs 'absolute'
-
+game_num = 4 #using game 4 (from DC_1_17) for presentation
 
 def main():
     av_move_dict, ch_move_dict = configure_source_files()
@@ -37,9 +37,9 @@ def configure_source_files():
     with open("/Users/tylerahlstrom/Desktop/GitHub/DI_proposal/data/stockfish_performances_DC_1_17.csv", "r") as read_file:
         df = pd.read_csv(read_file)
 
-    am_json_entry = df['available_moves_eval_w'][4]
+    am_json_entry = df['available_moves_eval_w'][game_num]
     available_move_dict = json.loads(am_json_entry)
-    cm_json_entry = df['chosen_moves_eval_w'][4]
+    cm_json_entry = df['chosen_moves_eval_w'][game_num]
     chosen_move_dict = json.loads(cm_json_entry)
 
     return available_move_dict, chosen_move_dict
@@ -65,6 +65,7 @@ def get_performance_df(av_move_dict, ch_move_dict):
             all_options_dict[id_string] = [0.0 for _ in ch_move_dict.keys()]
             all_options_dict[id_string][int(move_num)] = 1./float(ch_move_dict[move_num]['num_move_options'])
             all_options_dict[id_string].append(temp_move_dict['cp_score'])
+            all_options_dict[id_string].append(temp_move_dict['mate_score'])
             all_options_dict[id_string].append(move_option == ch_move_dict[move_num]['move'])
 
     col_names = [str(m + 1) for m in range(len(ch_move_dict))]
@@ -73,6 +74,7 @@ def get_performance_df(av_move_dict, ch_move_dict):
             col_names[i] = "0"+ col_names[i]
         col_names[i] = 'move '+ col_names[i]
     col_names.append('cp_score')
+    col_names.append('mate_score')
     col_names.append('was_chosen')
 
     df = pd.DataFrame.from_dict(all_options_dict, orient='index', columns= col_names)
@@ -97,16 +99,17 @@ def plot_performance(df):
    
 
     cp_list = list(df['cp_score'])
+    mate_list = list(df['mate_score'])
     chosen_list = list(df['was_chosen'])
 
     if plot_type == 'absolute':
-        colors = get_colors(cp_list, chosen_list)
+        colors = get_colors(cp_list, mate_list, chosen_list)
     else:
         colors = get_neutral_colors(cp_list, chosen_list)
     
 
-    exclude = ['sort_num', 'cp_score', 'was_chosen']
-    p = df.ix[:, df.columns.difference(exclude)].T.plot(kind='bar', stacked=True, color = colors, edgecolor = 'black', figsize=(16,8), grid = None, legend=False, linewidth = 1.5)
+    exclude = ['sort_num', 'cp_score', 'mate_score', 'was_chosen']
+    p = df.ix[:, df.columns.difference(exclude)].T.plot(kind='bar', stacked=True, color = colors, edgecolor = 'black', figsize=(24,8), grid = None, legend=False, linewidth = 1.5)
     plt.rcParams["font.size"] = 28
     plt.minorticks_off()
     #plt.setp(p, markerfacecolor='C0')
@@ -115,9 +118,15 @@ def plot_performance(df):
     
     plt.xticks(x_ticks_int, x_ticks_str, rotation='horizontal', fontsize=14, fontname = 'Lucida Console')
     plt.yticks([])
-    plt.title("Performance in a single game of chess", loc = 'center', y=0.99, bbox=dict(facecolor='white', edgecolor='black', boxstyle='square', linewidth = 1.0), fontsize=30, **font)
-    plt.xlabel("Turn number", fontsize=22, **font)
-    plt.ylabel("Relative move option strength",labelpad= 20, fontsize=22, **font)
+
+    if plot_type == 'absolute':
+        title = "Absolute score of all move options in a single game"
+    else:
+        title = "Performance in a single game of chess: choice rank"
+
+    plt.title(title, loc = 'center', y=0.99, bbox=dict(facecolor='white', edgecolor='black', boxstyle='square', linewidth = 1.0), fontsize=34, **font)
+    plt.xlabel("Turn number", fontsize=24, **font)
+    plt.ylabel("Relative\nmove\noption\nstrength", rotation = 'horizontal', horizontalalignment = 'left', labelpad= 90, fontsize=24, **font)
     plt.xlim(-0.75, x_ticks_int[-1] + 0.75)
     plt.ylim(0.0, 1.1)
 
@@ -135,13 +144,13 @@ def plot_performance(df):
                             label='Strong move', linewidth = 1.0),
                             Patch(facecolor=[102./255., 0, 25./255.], edgecolor='black',
                             label='Weak move', linewidth = 1.0)]
-        ax.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1, 0.5), prop={'size': 18, 'family':'Adobe Hebrew'})
+        ax.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1, 0.5), prop={'size': 18, 'family':'Adobe Hebrew'}, labelspacing = 1.5)
     if plot_type == 'relative':
         legend_elements = [Patch(facecolor=[218.0/255,165/255.0,32.0/255, 1.0], edgecolor='black',
-                            label='Chosen move option', linewidth = 1.0), 
-                            Patch(facecolor=[0.0, 0.0, 0.0, 0.3], edgecolor='black',
-                            label='Unchosen move option', linewidth = 1.0)]
-        ax.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1, 0.5), prop={'size': 18, 'family':'Adobe Hebrew'})
+                            label='Chosen move \noption', linewidth = 1.0), 
+                            Patch(facecolor=[0.0, 0.0, 0.0, 0.6], edgecolor='black',
+                            label='Unchosen move \noption', linewidth = 1.0)]
+        ax.legend(handles=legend_elements, loc='center left', bbox_to_anchor=(1, 0.5), prop={'size': 18, 'family':'Adobe Hebrew'}, labelspacing = 1.0)
 
     # plt.legend(handles=legend_elements, loc='top')
     plt.show()
@@ -151,7 +160,7 @@ def get_neutral_colors(score_list, chosen_list):
     base_color = [0,0,0, 0.0]
     colors = []
     for _, chosen in zip(score_list, chosen_list):
-        alpha = 0.2
+        alpha = 0.6
         if chosen:
             color = [218.0/255,165/255.0,32.0/255, 1.0]
             colors.append(color)
@@ -164,7 +173,7 @@ def get_neutral_colors(score_list, chosen_list):
 
 
 
-def get_colors(score_list, chosen_list):
+def get_colors(score_list, mate_list, chosen_list):
     colors = [(0, 51./255., 102./255.), (.7, .6, .7), (102./255., 0, 25./255.)] 
     #n_bins = [3, 6, 10, 100]
     cmap_name = 'my_custom_cmap'
@@ -174,13 +183,23 @@ def get_colors(score_list, chosen_list):
     colors = []
     int_helper1 = -1
     int_helper2 = 1
-    for cp, chosen in zip(score_list, chosen_list):
 
+    for cp, mate, chosen in zip(score_list, mate_list, chosen_list):
         alpha = 1.0 #the non-chosen alpha
         if chosen:
             alpha = 1.0
 
-        if cp < 1000*int_helper1:
+        if mate is not None:
+            if mate[0] == 'A':
+                color = cmap(0.0 *int_helper2)
+                color = (color[0] , color[1], color[2], alpha)
+                colors.append(color)
+            elif mate[0] == 'D':
+                color = cmap(0.9 *int_helper2)
+                color = (color[0] , color[1], color[2], alpha)
+                colors.append(color)
+
+        elif cp < 1000*int_helper1:
             color = cmap(1.0 *int_helper2)
             color = (color[0] , color[1], color[2], alpha)
             #color[:, 3] = alpha
@@ -222,10 +241,13 @@ def get_colors(score_list, chosen_list):
             color = cmap(0.1 *int_helper2)
             color = (color[0] , color[1], color[2], alpha)
             colors.append(color)
-        else:
+        elif cp is not None:
             color = cmap(0.0 *int_helper2)
             color = (color[0] , color[1], color[2], alpha)
             colors.append(color)
+        else:
+            print("lost color here" + str(cp) + str(mate) + str(chosen))
+        
     return colors
 
 
