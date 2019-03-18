@@ -1,6 +1,4 @@
-## Data Incubator Fellowship Capstone Project
-
-This was my capstone project for the Data Incubator Fellowship (DC cohort Winter 2019).
+### Data Incubator Fellowship Capstone Project (DC cohort Winter 2019)
 
 For results and figures, see the [results notebook](Project_Results.ipynb).
 
