@@ -1,4 +1,4 @@
-## Proposal project for the Data Incubator Fellowship
+## Data Incubator Fellowship Capstone Project
 
 This was my capstone project for the Data Incubator Fellowship (DC cohort Winter 2019).
 
