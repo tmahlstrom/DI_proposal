@@ -26,11 +26,12 @@ print_to_console = True
 sys.setrecursionlimit(15000)
 
 text_notification_on = False
-t_acc = 'AC4400f5964a54435cd2cba080478cb9c9'
-t_tok = '96af49f32cd628d9aa50439b2d4ea944'
-t_cli = Client(t_acc, t_tok)
-t_num = '+12028512902'
-my_p = '+16515874056'
+#from acc_details import *
+# t_acc = ...
+# t_tok = ...
+# t_cli = Client(t_acc, t_tok)
+# t_num = ...
+# my_p = ...
 
 #writing_file = "/Users/tylerahlstrom/Documents/GitHub/DI_Proposal/data/stockfish_performances_1sec_TEST.csv"
 writing_file = "stockfish_performances_DC.csv"
